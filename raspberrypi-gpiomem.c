@@ -18,6 +18,7 @@
 #include <linux/cdev.h>
 #include <linux/pagemap.h>
 #include <linux/io.h>
+#include <linux/version.h>
 
 #define DRIVER_NAME "rpi-gpiomem"
 #define DEVICE_MINOR 0
@@ -28,6 +29,12 @@
  * ranges. Most use only one or two.
  */
 #define MAX_RANGES 4
+
+#if LINUX_VERSION_CODE >= KERNEL_VERSION(6,3,0)
+#define compat_class_create(name) class_create(name)
+#else
+#define compat_class_create(name) class_create(THIS_MODULE, name)
+#endif
 
 struct io_windows {
 	unsigned long phys_base;
@@ -200,7 +207,7 @@ static int rpi_gpiomem_probe(struct platform_device *pdev)
 
 	/* Create sysfs entries */
 
-	priv->class = class_create(priv->name);
+	priv->class = compat_class_create(priv->name);
 	if (IS_ERR(priv->class)) {
 		err = PTR_ERR(priv->class);
 		goto failed_class_create;
