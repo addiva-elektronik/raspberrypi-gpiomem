@@ -14,3 +14,22 @@ with only trivial change to make it compatible with kernels < 6.3
 Note that the ABI differs from /dev/mem in that all the regions assigned
 to the driver is mapped in one linear chunk, no matter which file offset
 is requested. See the source file for details.
+
+# DTS
+
+compatible = "raspberrypi,gpiomem"
+
+reg = list of memory regions
+
+chardev-name = "name of /dev/ node"
+
+```
+    gpiomem-node {
+	compatible = "raspberrypi,gpiomem";
+	reg = <
+		0xDEBF0000 0x1000
+		0xDEBA0000 0x1000
+	>;
+	chardev-name = "gpiomem";
+    };
+```
